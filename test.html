@@ -1,0 +1,202 @@
+<!-- <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="UserPage.aspx.cs" Inherits="SoftLogic.UserPage" %> -->
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head runat="server">
+    <meta charset="UTF-8" />
+    <title>SoftLogic</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="userPage.css" />
+    <link rel="stylesheet" type="text/css" href="Media/normalize.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+</head>
+
+<script type="text/javascript">
+
+    var counterId = 1;
+    var spanId = 1;
+    var lastId = 0;
+
+    window.onload = function () {
+
+        // SoftLogic.UserTaskDB.GetSaveUserTask(onComplete, onError);
+
+    }
+
+    function AddInDB() {
+        var taskText = document.getElementById('newTaskText').value;
+        AddTaskInContainer(taskText, lastId + 1, false);
+    }
+
+    function AddTaskInContainer(taskText, TaskId, saveFlag) {
+
+        if (taskText) {
+            lastId = TaskId;
+            var readyTampleteTask = document.getElementsByClassName('filledTask')[0].cloneNode(true);
+            readyTampleteTask.setAttribute('id', TaskId);
+
+            document.getElementById('taskContainer').appendChild(readyTampleteTask);
+            document.getElementsByClassName('taskText')[spanId].innerHTML = taskText;
+
+            $('#' + TaskId).fadeIn(300);
+
+            if (saveFlag) {
+                // document.getElementById('newTaskText').value = null;
+                SoftLogic.UserTaskDB.AddNewTask(taskText, TaskId, onComplete, onError);
+            }
+            spanId++;
+            document.getElementById('newTaskText').value = null;
+        }
+    }
+
+    function DeleteTask(delTask) {
+        $('#' + delTask.parentNode.id).fadeOut(300);
+        // SoftLogic.UserTaskDB.DeleteTask(delTask.parentNode.id, onComplete, onError);
+    }
+
+    // function onComplete(result) {
+    //     if (result) {
+    //         for (var i in result) {
+    //             console.log(i + " " + result[i]);
+    //             AddTaskInContainer(result[i], i, false);
+    //         }
+    //     }
+    //     console.log(result);
+    // }
+
+    // function onError(error) {
+    //     alert(error._massege);
+    // }
+
+</script>
+
+<body>
+    <form id="form1" runat="server">
+        <!-- <asp:ScriptManager runat="server">
+            <Services>
+                <asp:ServiceReference Path="~/UserTaskDB.asmx" />
+            </Services>
+        </asp:ScriptManager>-->
+
+        <header>
+            <div class="container">
+                <div class="header-main">
+                    <div class="header-logo">
+                        <span>sl</span>
+                    </div>
+                    <div class="header-user">
+                        <div class="header-link">
+                            <div><a href="#">Me</a></div>
+                            <div><a href="#">Team</a></div>
+
+                            <!-- <asp:Label ID="userName" runat="server" /> -->
+                        </div>
+                        <div class="header-user-photo">
+                            <!-- <img src="#"> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="container">
+                <input type="checkbox" id="hmt" class="hidden-menu-ticker">
+                <label class="btn-menu" for="hmt">
+                    <span class="first"></span>
+                    <span class="second"></span>
+                    <span class="third"></span>
+                </label>
+                <ul class="hidden-menu">
+                    <a href="#">
+                        <li>Taskboard</li>
+                    </a>
+                    <a href="#">
+                        <li>Sprint Backlog</li>
+                    </a>
+                    <a href="#">
+                        <li>Product Backlog</li>
+                    </a>
+                    <a href="#">
+                        <li>Tree of seniority</li>
+                    </a>
+                    <a href="#">
+                        <li>Code holder</li>
+                    </a>
+                    <a href="#">
+                        <li>Settings</li>
+                    </a>
+                </ul>
+            </div>
+            <section>
+                <div class="container">
+                    <div class="main">
+                        <h1>Todays Sprint</h1>
+                        <div class="main-task">
+                            <div class="task">Task</div>
+                            <div class="person">Person</div>
+                            <div class="priority">Priority</div>
+                            <div class="status">Status</div>
+                        </div>
+                    </div>
+                    <section>
+                        <div class="main-task filledTask" style="display: none;">
+                            <input type="button" value="del" onclick="DeleteTask(this)">
+                            <div class="sprint-task">
+                                <span class="taskText" style="width: 100px;"></span>
+                            </div>
+                            <div class="person">Person</div>
+                            <div class="sprint-priority">
+                                <!-- <div id="btn"><span class="btn-add">+Add</span></div>
+														<div id="btn-container">
+															<span class="btn-red">awesome btn</span>
+															<span class="btn-green">awesome btn</span>
+															<span class="btn-blue">awesome btn</span>
+														</div> -->
+                                <select>
+                                    <option selected="selected">+Add</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="status">Status</div>
+                        </div>
+
+                        <div class="main-sprint">
+
+                            <div id="taskContainer">
+                            </div>
+                            <div class="main-task" id="userTask" style="display: none;">
+                                <input value="AddToDB" onclick="AddInDB()" type="button">
+                                <input id="newTaskText" type="text">
+                                <div class="sprint-task">
+                                </div>
+                                <div class="person">Person</div>
+                                <div class="sprint-priority">
+                                    <!-- <div id="btn"><span class="btn-add">+Add</span></div>
+															<div id="btn-container">
+																<span class="btn-red">awesome btn</span>
+																<span class="btn-green">awesome btn</span>
+																<span class="btn-blue">awesome btn</span>
+															</div> -->
+                                    <select>
+                                        <option selected="selected">+Add</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                </div>
+                                <div class="status">Status</div>
+                            </div>
+                            <input type="button" onclick="$('#userTask').fadeIn(300);" value="AddTask" />
+                            <input type="button" onclick="$('#userTask').fadeOut(300);" value="Cancel" />
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </main>
+    </form>
+</body>
+
+</html>
